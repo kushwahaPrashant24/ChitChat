@@ -6,6 +6,7 @@ import AuthLayout from "./_Auth/AuthLayout";
 import RootLayout from "./Root/RootLayout";
 import './index.css'
 import { Home } from "./Root/Pages";
+import { Toaster } from "@/components/ui/toaster"
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route index element={<Home />} />
         </Route>
       </Routes>
+      <Toaster />
     </main>
   );
 }

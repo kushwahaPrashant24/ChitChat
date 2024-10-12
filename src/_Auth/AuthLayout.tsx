@@ -1,29 +1,25 @@
 import { Outlet, Navigate } from "react-router-dom";
 
-export default  function AuthLayout() {
+export default function AuthLayout() {
+  const isAuthenticated = false;
 
-    const isAuthenticated = false;
-
-
-     return (
+  
+  return (
+    <>
+      {isAuthenticated ? (
+        <Navigate to="/" />
+      ) : (
         <>
-        {
-            isAuthenticated ? (
-                <Navigate to="/" />
-
-            ): (
-                <>
-                <section className="flex flex-1 justify-center items-center flex-col py-10">
-                    <Outlet />
-                </section>
-                <img 
-                src="public/assets/social.webp"
-                alt="logo"
-                className="hidden xl:block h-screen w-1/2 object-cover bg-no-repeat"
-                />
-                </>
-            )
-        }
+          <section className="flex flex-1 justify-center items-center flex-col py-10">
+            <Outlet />
+          </section>
+          <img
+            src="public/assets/template.jpg"
+            alt="logo"
+            className="hidden xl:block h-screen w-1/2 object-cover bg-no-repeat"
+          />
         </>
-     ) 
+      )}
+    </>
+  );
 }
