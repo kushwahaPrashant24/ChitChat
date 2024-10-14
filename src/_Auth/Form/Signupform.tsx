@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -14,15 +13,24 @@ import { Input } from "@/components/ui/input";
 import { SignupValidation } from "@/lib/Validation/index";
 import { z } from "zod";
 import Loader from "@/components/Shared/Loader";
-import { Link } from "react-router-dom";
-import { createUserAccount } from "@/lib/appwrite/api";
+import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import {
+  useCreateUserAccount,
+  useSignInAccount,
+} from "@/lib/react-query/queriesAndMutations";
+import { useUserContext } from "@/Context/AuthContext";
 
-export default function Signupform() {
-  // Use useState to manage loading state
-  const [isLoading, setIsLoading] = useState(false);
-
+export default function SignupForm() {
   const { toast } = useToast();
+  const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
+  const navigate = useNavigate();
+
+  const { mutateAsync: createUserAccount, isPending: isCreatingUser } =
+    useCreateUserAccount();
+
+  const { mutateAsync: signInAccount, isPending: isSigningIn } =
+    useSignInAccount();
 
   const form = useForm<z.infer<typeof SignupValidation>>({
     resolver: zodResolver(SignupValidation),
@@ -35,18 +43,37 @@ export default function Signupform() {
   });
 
   async function onSubmit(values: z.infer<typeof SignupValidation>) {
-    setIsLoading(true); // Set loading to true when the form is submitted
     try {
       const newUser = await createUserAccount(values);
+
       if (!newUser) {
-        return toast({ title: "FAiled, Plz try again",});
+        return toast({ title: "Failed, Please try again" });
       }
 
-      //const session = await signInAccount ();
-    } catch (error) {
-      console.error("Error creating user account", error);
-    } finally {
-      setIsLoading(false); // Set loading to false after the process is done
+      const session = await signInAccount({
+        email: values.email,
+        password: values.password,
+      });
+
+      if (!session) {
+        return toast({ title: "Failed, Please try again" });
+      }
+
+      const isLoggedIn = await checkAuthUser();
+      if (isLoggedIn) {
+        form.reset(); // Reset the form after successful signup
+        navigate("/"); // Redirect to homepage
+      } else {
+        toast({ title: "SignUp is not successful" });
+      }
+    } catch (error: any) {
+      // Handle specific error cases
+      if (error.code === 409) {
+        toast({ title: "User already exists. Please login." });
+      } else {
+        toast({ title: "An error occurred during signup." });
+        console.error("Signup error:", error);
+      }
     }
   }
 
@@ -121,8 +148,12 @@ export default function Signupform() {
               </FormItem>
             )}
           />
-          <Button type="submit" className="shad-button_primary">
-            {isLoading ? (
+          <Button
+            type="submit"
+            className="shad-button_primary"
+            disabled={isCreatingUser || isSigningIn}
+          >
+            {isCreatingUser || isSigningIn ? (
               <div className="flex-center gap-2">
                 <Loader /> Loading...
               </div>
