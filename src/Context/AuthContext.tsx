@@ -21,7 +21,7 @@ interface IContextType {
   checkAuthUser: () => Promise<boolean>;
 }
 
-export const INITIAL_USER = {
+export const INITIAL_USER: IUser = {
   id: "",
   name: "",
   username: "",
@@ -30,7 +30,7 @@ export const INITIAL_USER = {
   bio: "",
 };
 
-const INITIAL_STATE = {
+const INITIAL_STATE: IContextType = {
   user: INITIAL_USER,
   isLoading: false,
   isAuthenticated: false,
@@ -49,6 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate(); // Add navigate
 
   const checkAuthUser = async () => {
+    setIsLoading(true); // Set loading to true when the check starts
     try {
       const currentAccount = await getCurrentUser();
 
@@ -63,26 +64,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
         setIsAuthenticated(true);
         return true;
+      } else {
+        setIsAuthenticated(false);
+        return false;
       }
-      return false;
     } catch (error) {
-      console.log(error);
+      console.error("Error during user authentication:", error);
       return false;
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // End loading state regardless of success or failure
     }
   };
 
-  useEffect(() => {
-    // localStorage.getItem("cookieFallback") === null
-    if (
-      localStorage.getItem("cookieFallback") === "[]" 
-     
-    ) {
+  /*useEffect(() => {
+    const cookieFallback = localStorage.getItem("cookieFallback");
+
+    if (!cookieFallback || cookieFallback === "[]") {
       navigate("/sign-in");
+    } else {
+      checkAuthUser().then((isAuth) => {
+        if (!isAuth) navigate("/sign-in");
+      });
     }
-    checkAuthUser();
-  }, [navigate]);
+  }, [navigate]);*/
 
   const value = {
     user,
