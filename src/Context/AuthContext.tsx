@@ -76,17 +76,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  /*useEffect(() => {
+  useEffect(() => {
     const cookieFallback = localStorage.getItem("cookieFallback");
 
+    // If no cookie, navigate to sign-in unless on sign-up page
     if (!cookieFallback || cookieFallback === "[]") {
-      navigate("/sign-in");
+      if (window.location.pathname !== "/sign-up") {
+        navigate("/sign-in");
+      }
     } else {
       checkAuthUser().then((isAuth) => {
-        if (!isAuth) navigate("/sign-in");
+        if (!isAuth && window.location.pathname !== "/sign-up") {
+          navigate("/sign-in");
+        }
       });
     }
-  }, [navigate]);*/
+  }, [navigate]);
 
   const value = {
     user,

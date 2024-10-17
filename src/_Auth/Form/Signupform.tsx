@@ -10,7 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { SignupValidation } from "@/lib/Validation/index";
+import { SignupValidation } from "@/lib/Validation/index"; // Ensure you're using SignupValidation here
 import { z } from "zod";
 import Loader from "@/components/Shared/Loader";
 import { Link, useNavigate } from "react-router-dom";
@@ -32,6 +32,7 @@ export default function SignupForm() {
   const { mutateAsync: signInAccount, isPending: isSigningIn } =
     useSignInAccount();
 
+  // Use SignupValidation here, not SigninValidation
   const form = useForm<z.infer<typeof SignupValidation>>({
     resolver: zodResolver(SignupValidation),
     defaultValues: {
