@@ -12,7 +12,7 @@ import multer from "multer";
 
 const authRoutes = Router();
 
-const upload = multer({ dest: "uploads/profile/" });
+const upload = multer({ dest: "uploads/profiles/" });
 
 authRoutes.post("/signup", signup);
 authRoutes.post("/login", login);
@@ -27,7 +27,6 @@ authRoutes.post(
 authRoutes.delete(
   "/remove-profile-image",
   verifyToken,
-  
   removeProfileImage
 );
 
