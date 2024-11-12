@@ -9,6 +9,8 @@ import { apiClient } from "@/lib/api-client.js";
 import { LOGIN_ROUTE, SIGNUP_ROUTE } from "@/utils/constants";
 import { useNavigate } from "react-router-dom";
 import { userAppStore } from "@/Store/index.js";
+import Lottie from "react-lottie";
+import { animationDefaultOption } from "@/lib/utils";
 
 function Auth() {
   const navigate = useNavigate();
@@ -156,7 +158,11 @@ function Auth() {
           </div>
         </div>
         <div className="hidden  xl:flex justify-center items-center">
-          <img src={Background} alt="Background" />
+        <Lottie onClickToPauseDisable={true}
+       height={400}
+       width={400}
+       options={animationDefaultOption}
+       />
         </div>
       </div>
     </div>
