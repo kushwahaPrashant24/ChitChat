@@ -11,7 +11,7 @@ function EmptyChatContainer() {
         width={200}
         options={animationDefaultOption}
       />
-      <div className=" text-opacity-80 text-white flex flex-col gap-5 items-center mt-10 lg:text-4xl text-3xl transition-all duration-300 text-center ">
+      <div className=" text-opacity-80 text-purple-200  flex flex-col gap-5 items-center mt-10 lg:text-4xl text-3xl transition-all duration-300 text-center ">
         <h3 className=" poppins-medium">
           Hi <span className=" text-purple-500 ">!</span> Welcome to <span className=" text-purple-500 ">
          Syncronus
