@@ -32,44 +32,29 @@ const Logo = () => {
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
       <motion.svg
-        id="logo-c"
-        width="80"
-        height="80"
+        id="logo-chitchat"
+        width="1200"
+        height="120"
         viewBox="0 0 80 80"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        {/* Outer part of the C */}
-        <motion.path
-          d="M40 10C22.5 10 10 22.5 10 40C10 57.5 22.5 70 40 70"
-          fill="none"
-          stroke="#8338ec"
-          strokeWidth="16"
-          strokeLinecap="round"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 1, ease: "easeOut" }}
-        />
-        {/* Inner part of the C */}
-        <motion.path
-          d="M40 20C27.5 20 20 27.5 20 40C20 52.5 27.5 60 40 60"
-          fill="none"
-          stroke="#975aed"
-          strokeWidth="8"
-          strokeLinecap="round"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-        />
+        {/* Adding "ChitChat" as the main element */}
+        <motion.text
+          x="40%"
+          y="40%"
+          dominantBaseline="middle"
+          textAnchor="middle"
+          fill="#8338ec"
+          fontSize="20"
+          fontWeight="bold"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+          ChitChat
+        </motion.text>
       </motion.svg>
-      <motion.span
-        className="text-3xl font-semibold"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 1 }}
-      >
-        ChitChat
-      </motion.span>
     </motion.div>
   );
 };
