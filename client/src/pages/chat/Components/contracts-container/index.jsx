@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import ProfileInfo from "./components/profile-info"
 
 function ContractContainer() {
   return (
@@ -17,6 +18,8 @@ function ContractContainer() {
           <Title text="Channels" />
         </div>
       </div>
+      
+      <ProfileInfo />
     </div>
   );
 }
