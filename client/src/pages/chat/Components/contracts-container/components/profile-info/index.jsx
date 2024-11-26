@@ -11,11 +11,17 @@ import {
 } from "@/components/ui/tooltip";
 import { FiEdit2 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { IoLogOut, IoPowerSharp } from "react-icons/io5";
+
 
 export default function Index() {
   const { userInfo } = userAppStore();
   const navigate = useNavigate();
 
+
+  const LogOut = async => {
+
+  }
 
   // Debugging
   console.log("User Info:", userInfo);
@@ -68,6 +74,18 @@ export default function Index() {
             </TooltipTrigger>
             <TooltipContent className="bg-[#1c1b1e] border-none text-white ">
               Edit profile
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <IoPowerSharp className="text-r-500  text-xl font-medium " 
+                onClick={()=> navigate(LogOut)}
+              />
+            </TooltipTrigger>
+            <TooltipContent className="bg-[#1c1b1e] border-none text-white ">
+              Logout
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
