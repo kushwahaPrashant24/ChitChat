@@ -2,7 +2,7 @@ import React from "react";
 import { Avatar } from "@/components/ui/avatar";
 import { userAppStore } from "@/Store";
 import { getColor } from "@/lib/utils";
-import { HOST } from "@/utils/constants";
+import { HOST, LOGOUT_ROUTE } from "@/utils/constants";
 import {
   Tooltip,
   TooltipContent,
@@ -12,15 +12,29 @@ import {
 import { FiEdit2 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { IoLogOut, IoPowerSharp } from "react-icons/io5";
+import { apiClient } from "@/lib/api-client";
 
 
 export default function Index() {
-  const { userInfo } = userAppStore();
+  const { userInfo , setUserInfo} = userAppStore();
   const navigate = useNavigate();
 
 
-  const LogOut = async => {
+  const logOut = async () => {
+try{
+  const response = await apiClient.post(LOGOUT_ROUTE,
+    {},
+    {withCredentials: true});
 
+    if(response.status === 200) {
+      navigate("/auth");
+      setUserInfo(null);
+    }
+
+
+}catch(error){
+  console.log(error)
+}
   }
 
   // Debugging
@@ -80,8 +94,8 @@ export default function Index() {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <IoPowerSharp className="text-r-500  text-xl font-medium " 
-                onClick={()=> navigate(LogOut)}
+              <IoPowerSharp className="text-red-500  text-xl font-medium " 
+                onClick={logOut}
               />
             </TooltipTrigger>
             <TooltipContent className="bg-[#1c1b1e] border-none text-white ">
