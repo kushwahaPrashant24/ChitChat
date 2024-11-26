@@ -3,9 +3,19 @@ import { Avatar } from "@/components/ui/avatar";
 import { userAppStore } from "@/Store";
 import { getColor } from "@/lib/utils";
 import { HOST } from "@/utils/constants";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { FiEdit2 } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 export default function Index() {
   const { userInfo } = userAppStore();
+  const navigate = useNavigate();
+
 
   // Debugging
   console.log("User Info:", userInfo);
@@ -19,8 +29,8 @@ export default function Index() {
     : "U";
 
   return (
-    <div className="absolute bottom-0 h-16 flex items-center justify-center px-10 w-full bg-[#2a2b33]">
-      <div className="flex gap-3 items-center justify-center">
+    <div className="absolute bottom-0 h-16 flex items-center justify-between px-10 w-full bg-[#2a2b33]">
+      <div className="flex gap-3 items-center justify-between">
         <div className="w-12 h-12 relative">
           <Avatar className="h-12 w-12 rounded-full overflow-hidden">
             {profileImage ? (
@@ -43,15 +53,25 @@ export default function Index() {
           </Avatar>
         </div>
         <div className="">
-            {
-                userInfo.firstName && userInfo.lastName ? `${userInfo.firstName} ${userInfo.lastName}`
-                : "" 
-            }
+          {userInfo.firstName && userInfo.lastName
+            ? `${userInfo.firstName} ${userInfo.lastName}`
+            : ""}
         </div>
       </div>
-    <div className="flex gap-5 "> 
-    
-    </div>
+      <div className="flex gap-5 ">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <FiEdit2 className="text-purple-500  text-xl font-medium " 
+                onClick={()=> navigate("/profile")}
+              />
+            </TooltipTrigger>
+            <TooltipContent className="bg-[#1c1b1e] border-none text-white ">
+              Edit profile
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
     </div>
   );
 }
