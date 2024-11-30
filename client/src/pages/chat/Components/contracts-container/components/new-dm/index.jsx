@@ -20,8 +20,11 @@ import { apiClient } from "@/lib/api-client";
 import { SEARCH_CONTACTS_ROUTES, HOST } from "@/utils/constants";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { userAppStore } from "@/Store";
+import { getColor } from '@/lib/utils';
 
 export default function Index() {
+  const { setSelectedChatType, setSelectedChatData } = userAppStore();
   const [openNewContactModel, setOpenNewContactModel] = useState(false);
   const [searchedContacts, setSearchedContacts] = useState([]);
 
@@ -48,7 +51,14 @@ export default function Index() {
     }
   };
 
-  const getColor = (color) => `bg-${color || "red-500"}`; // Default fallback color
+  
+
+  const selectNewContact = (contact) => {
+    setOpenNewContactModel(false);
+    setSelectedChatType("contact");
+    setSelectedChatData(contact);
+    setSearchedContacts([]);
+  };
 
   return (
     <>
@@ -84,6 +94,8 @@ export default function Index() {
             />
           </div>
 
+          
+
           {/* Contact List */}
           <ScrollArea className="h-[250px]">
             <div className="flex flex-col gap-5">
@@ -91,6 +103,7 @@ export default function Index() {
                 <div
                   key={contact._id}
                   className="flex gap-3 items-center cursor-pointer"
+                  onClick={() => selectNewContact(contact)}
                 >
                   <div className="w-12 h-12 relative">
                     <Avatar className="h-12 w-12 rounded-full overflow-hidden">
@@ -102,9 +115,9 @@ export default function Index() {
                         />
                       ) : (
                         <div
-                          className={`uppercase h-12 w-12 text-lg border-[1px] flex items-center justify-center rounded-full ${
-                            getColor(contact.color)
-                          }`}
+                          className={`uppercase h-12 w-12 text-lg border-[1px] flex items-center justify-center rounded-full ${getColor(
+                            contact.color
+                          )}`}
                         >
                           {contact.firstName
                             ? contact.firstName.split("").shift()
