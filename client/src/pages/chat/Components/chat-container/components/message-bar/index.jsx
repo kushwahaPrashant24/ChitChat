@@ -3,14 +3,18 @@ import { useEffect, useRef } from "react";
 import EmojiPicker from "emoji-picker-react";
 import React, { useState } from "react";
 import { GrAttachment } from "react-icons/gr";
-import { IoSad, IoSend } from "react-icons/io5";
+import {  IoSend } from "react-icons/io5";
 import { RiEmojiStickerLine } from "react-icons/ri";
+import { useSocket } from "@/context/SocketContext";
+import { userAppStore } from "@/Store";
+
 
 function MessageBar() {
   const emojiRef = useRef();
-
+  const Socket = useSocket();
+  const {selectedChatType,selectedChatData, userInfo} = userAppStore();
   const [message, setMessage] = useState("");
-
+  
   const [emojiPikerOpen, setEmojiPikerOpen] = useState(false);
 
   useEffect(() => {
@@ -34,7 +38,15 @@ function MessageBar() {
   };
 
   const handleSendMessage = async () => {
-    console.log("Send");
+     if(selectedChatType === "contact") {
+      Socket.emit("sendMessage", {
+        sender: userInfo.id,
+        content:message,
+        recipient:selectedChatData._id,
+        messageType:"text",
+        fileUrl: undefined,
+      })
+     } 
   };
 
   return (
