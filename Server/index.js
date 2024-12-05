@@ -1,4 +1,5 @@
 import express from "express";
+import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
@@ -6,15 +7,15 @@ import authRoutes from "./Routes/AuthRoutes.js";
 import contactsRoutes from "./Routes/ContactsRoutes.js";
 import setupSocket from "./socket.js";
 
+dotenv.config();
+
 const app = express();
 const port = process.env.PORT || 3000;
-
-// Direct MongoDB Atlas connection string
-const databaseURL = "mongodb+srv://prashantkush24:cxgJn3biEAhtXP5X@cluster0.3zlb4.mongodb.net/myDatabaseName?retryWrites=true&w=majority";
+const databaseURL = process.env.DATABASE_URL;
 
 app.use(
   cors({
-    origin: ["http://localhost:3000"], // Replace with the frontend origin if different
+    origin: [process.env.ORIGIN],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
   })
@@ -35,9 +36,6 @@ const server = app.listen(port, () => {
 setupSocket(server);
 
 mongoose
-  .connect(databaseURL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(databaseURL)
   .then(() => console.log("DB Connection Successful"))
   .catch((err) => console.log(err.message));
