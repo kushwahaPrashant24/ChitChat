@@ -2,8 +2,10 @@ import { apiClient } from "@/lib/api-client";
 import { userAppStore } from "@/Store";
 import { GET_ALL_MESSAGES_ROUTES } from "@/utils/constants";
 import moment from "moment";
-import { use } from "react";
 import { useEffect, useRef } from "react";
+import { HOST } from "@/utils/constants";
+import { MdFolderZip } from "react-icons/md";
+import { IoMdArrowRoundDown } from "react-icons/io";
 
 function MessageContainer() {
   const scrollRef = useRef();
@@ -16,37 +18,37 @@ function MessageContainer() {
   } = userAppStore();
 
   useEffect(() => {
-     const getMessages = async () => {
+    const getMessages = async () => {
       try {
-        const response = await apiClient.post(GET_ALL_MESSAGES_ROUTES,
-           {id: selectedChatData._id},
-           {withCredentials: true}
-          );
-        if(response.data.messages) {
+        const response = await apiClient.post(
+          GET_ALL_MESSAGES_ROUTES,
+          { id: selectedChatData._id },
+          { withCredentials: true }
+        );
+        if (response.data.messages) {
           setSelectedChatMessages(response.data.messages);
         }
-      }
-      catch (error) {
+      } catch (error) {
         console.log({ error });
       }
-     };
-    if(selectedChatData._id) {
-      if(selectedChatType === "contact") {
+    };
+    if (selectedChatData._id) {
+      if (selectedChatType === "contact") {
         getMessages();
       }
     }
-
-  }, [
-    selectedChatData,
-    selectedChatType,
-    setSelectedChatMessages,
-  ]);
+  }, [selectedChatData, selectedChatType, setSelectedChatMessages]);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [selectedChatMessages]);
+
+  const checkIfImage = (filePath) => {
+    const imageRegex = /\.(jpg|jpeg|png|gif|bmp|tiff|tif|svg|heic|heif)$/i;
+    return imageRegex.test(filePath);
+  };
 
   const renderMessages = () => {
     let lastDate = null;
@@ -67,6 +69,20 @@ function MessageContainer() {
     });
   };
 
+  const downloadFile = async (file) => {
+    const response = await apiClient.get(`${HOST}/${file}`, {
+      responseType: "blob",
+    });
+    const urlBlob = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = urlBlob;
+    link.setAttribute("download", file.split("/").pop());
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(urlBlob);
+  };
+
   const renderDMMessages = (message) => (
     <div
       className={`${
@@ -82,6 +98,38 @@ function MessageContainer() {
           } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
         >
           {message.content}
+        </div>
+      )}
+      {message.messageType === "file" && (
+        <div
+          className={`${
+            message.sender !== selectedChatData?._id
+              ? "bg-[#8417ff]/5 text-[#8417ff]/90 border-[#8417ff]/50"
+              : "bg-[#2a2b33]/5 text-white/80 border-white/20"
+          } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
+        >
+          {checkIfImage(message.fileUrl) ? (
+            <div className="cursor-pointer">
+              <img
+                src={`${HOST}/${message.fileUrl}`}
+                alt="file preview"
+                className="object-cover w-[300px] h-[300px] bg-black"
+              />
+            </div>
+          ) : (
+            <div className="flex items-center justify-center gap-4">
+              <span className="text-3xl text-white/8 bg-black/20 rounded-full p-3">
+                <MdFolderZip />
+              </span>
+              <span>{message.fileUrl.split("/").pop()}</span>
+              <span
+                className="bg-black/20 rounded-full p-3 text-2xl hover:bg-black/50 hover:text-white cursor-pointer transition-all duration-300"
+                onClick={() => downloadFile(message.fileUrl)}
+              >
+                <IoMdArrowRoundDown />
+              </span>
+            </div>
+          )}
         </div>
       )}
       <div className="text-xs text-gray-600">
