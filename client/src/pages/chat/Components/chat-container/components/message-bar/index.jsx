@@ -8,6 +8,7 @@ import { RiEmojiStickerLine } from "react-icons/ri";
 import { useSocket } from "@/context/SocketContext";
 import { userAppStore } from "@/Store";
 import { UPLOAD_FILE_ROUTE } from "@/utils/constants";
+import {apiClient} from "@/lib/api-client";
 
 function MessageBar() {
   const emojiRef = useRef();
