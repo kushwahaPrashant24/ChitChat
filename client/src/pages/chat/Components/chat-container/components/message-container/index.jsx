@@ -6,6 +6,8 @@ import { useEffect, useRef } from "react";
 import { HOST } from "@/utils/constants";
 import { MdFolderZip } from "react-icons/md";
 import { IoMdArrowRoundDown } from "react-icons/io";
+import { useState } from "react";
+import { IoCloseSharp } from "react-icons/io5";
 
 function MessageContainer() {
   const scrollRef = useRef();
@@ -16,6 +18,9 @@ function MessageContainer() {
     selectedChatMessages,
     setSelectedChatMessages,
   } = userAppStore();
+
+  const [showImage, setShowImage] = useState(false);
+  const [imageUrl, setImageUrl] = useState(null);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -109,7 +114,13 @@ function MessageContainer() {
           } border inline-block p-4 rounded my-1 max-w-[50%] break-words`}
         >
           {checkIfImage(message.fileUrl) ? (
-            <div className="cursor-pointer">
+            <div
+              className="cursor-pointer"
+              onClick={() => {
+                setImageUrl(true);
+                setShowImage(message.fileUrl);
+              }}
+            >
               <img
                 src={`${HOST}/${message.fileUrl}`}
                 alt="file preview"
@@ -142,6 +153,31 @@ function MessageContainer() {
     <div className="flex-1 overflow-y-auto scrollbar-hidden p-4 px-8 md:w-[65vw] lg:w-[75vw] xl:w-[80vw] w-full">
       {renderMessages()}
       <div ref={scrollRef}></div>
+      {showImage && (
+        <div className="fixed z-[1000] top-0 left-0 w-[100vw] h-[100vh] flex items-center justify-center backdrop-blur-lg flex-col bg-black/50 "
+         onClick={() => setShowImage(false)}>
+          <div>
+            <img
+              src={`${HOST}/${showImage}`}
+              alt="image"
+              className="h-[80vh] w-full bg-cover "
+            />
+            <div className="flex gap-5 fixed top-0 mt-5">
+              <button className="bg-black/20 rounded-full p-3 text-2xl hover:bg-black/50 hover:text-white cursor-pointer transition-all duration-300"
+              onClick={() => downloadFile(showImage)}
+              >
+                <IoMdArrowRoundDown />
+              </button>
+              <button
+                onClick={() => setShowImage(false)}
+                className="bg-black/20 rounded-full p-3 text-2xl hover:bg-black/50 hover:text-white cursor-pointer transition-all duration-300"
+              >
+                <IoCloseSharp />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
