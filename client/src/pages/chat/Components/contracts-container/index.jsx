@@ -6,6 +6,7 @@ import { apiClient } from "@/lib/api-client";
 import { GET_CONTACTS_DM_ROUTES } from "@/utils/constants";
 import { userAppStore } from "@/Store";
 import ContactList from "@/components/contact-list";
+import CreateChannel from "./components/create-channel";
 
 function ContractContainer() {
 
@@ -40,6 +41,7 @@ function ContractContainer() {
       <div className=" my-5 ">
         <div className="flex items-center justify-between pr-10">
           <Title text="Channels" />
+          <CreateChannel/>
         </div>
       </div>
       
